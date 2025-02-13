@@ -94,21 +94,10 @@ const Inventory = () => {
 
   const handleSaveChanges = () => {
     if (editingProduct) {
-      // Show notification based on stock status
-      const status = getStockStatus(editingProduct.quantity, editingProduct.lowStockThreshold);
-      if (status === "critical") {
-        toast({
-          title: "⚠️ Critical Stock Alert",
-          description: `${editingProduct.name} is critically low!`,
-          variant: "destructive",
-        });
-      } else if (status === "low") {
-        toast({
-          title: "🔔 Low Stock Alert",
-          description: `${editingProduct.name} is running low. Restock soon!`,
-        });
-      }
-      
+      toast({
+        title: "Changes saved",
+        description: "Product information has been updated successfully.",
+      });
       setEditingProduct(null);
     }
   };
