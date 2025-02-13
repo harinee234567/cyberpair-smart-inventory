@@ -89,23 +89,6 @@ const Login = () => {
           </Button>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes spin-slow {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes spin-slow-reverse {
-          0% { transform: rotate(360deg); }
-          100% { transform: rotate(0deg); }
-        }
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-        .animate-spin-slow-reverse {
-          animation: spin-slow-reverse 15s linear infinite;
-        }
-      `}</style>
     </div>
   );
 };
