@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Search, Filter, Edit, Trash2, QrCode, Plus, Save } from "lucide-react";
+import { Search, Filter, Edit, Trash2, QrCode, Plus, Save, AlertTriangle, Bell } from "lucide-react";
 import MobileLayout from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +27,7 @@ type Product = {
   category: string;
   quantity: number;
   price: number;
+  lowStockThreshold?: number;
 };
 
 const mockProducts: Product[] = [
@@ -35,16 +36,18 @@ const mockProducts: Product[] = [
     name: "Sample Product 1",
     image: "https://via.placeholder.com/50",
     category: "electronics",
-    quantity: 50,
+    quantity: 2,
     price: 299.99,
+    lowStockThreshold: 10,
   },
   {
     id: "2",
     name: "Sample Product 2",
     image: "https://via.placeholder.com/50",
     category: "clothing",
-    quantity: 5,
+    quantity: 15,
     price: 49.99,
+    lowStockThreshold: 20,
   },
 ];
 
@@ -56,26 +59,41 @@ const Inventory = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [restockQuantity, setRestockQuantity] = useState<number>(0);
 
-  const getStockStatus = (quantity: number) => {
-    if (quantity <= 0) return "out";
-    if (quantity < 10) return "low";
-    return "in";
+  const getStockStatus = (quantity: number, threshold: number = 10) => {
+    if (quantity <= 3) return "critical";
+    if (quantity <= threshold) return "low";
+    if (quantity <= threshold * 2) return "warning";
+    return "normal";
   };
 
   const getStockColorClass = (status: string) => {
     switch (status) {
-      case "out":
+      case "critical":
         return "text-red-500";
       case "low":
         return "text-orange-500";
+      case "warning":
+        return "text-yellow-500";
       default:
         return "text-green-500";
     }
   };
 
+  const getStockIcon = (status: string) => {
+    switch (status) {
+      case "critical":
+        return "🔴";
+      case "low":
+        return "🟠";
+      case "warning":
+        return "🟡";
+      default:
+        return "🟢";
+    }
+  };
+
   const handleSaveChanges = () => {
     if (editingProduct) {
-      // Here we would normally update the product in the database
       toast({
         title: "Changes saved",
         description: "Product information has been updated successfully.",
@@ -85,7 +103,6 @@ const Inventory = () => {
   };
 
   const handleDelete = (productId: string) => {
-    // Here we would normally delete the product from the database
     toast({
       title: "Product deleted",
       description: "The product has been removed from inventory.",
@@ -108,10 +125,66 @@ const Inventory = () => {
     }
   };
 
+  const getLowStockProducts = () => {
+    return mockProducts
+      .filter(product => {
+        const status = getStockStatus(product.quantity, product.lowStockThreshold);
+        return ["critical", "low", "warning"].includes(status);
+      })
+      .sort((a, b) => {
+        const statusA = getStockStatus(a.quantity, a.lowStockThreshold);
+        const statusB = getStockStatus(b.quantity, b.lowStockThreshold);
+        const priority = { critical: 0, low: 1, warning: 2 };
+        return priority[statusA as keyof typeof priority] - priority[statusB as keyof typeof priority];
+      });
+  };
+
   return (
     <MobileLayout>
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold">Inventory</h1>
+
+        {/* Low Stock Alerts */}
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-orange-500" />
+              Low Stock Alerts
+            </h2>
+            <Button variant="outline" size="sm">
+              <Bell className="w-4 h-4 mr-2" />
+              Manage Alerts
+            </Button>
+          </div>
+          
+          <div className="space-y-3">
+            {getLowStockProducts().map((product) => {
+              const status = getStockStatus(product.quantity, product.lowStockThreshold);
+              return (
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">{getStockIcon(status)}</span>
+                    <div>
+                      <h3 className="font-medium">{product.name}</h3>
+                      <p className={`text-sm ${getStockColorClass(status)}`}>
+                        {product.quantity} units left
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    size="sm"
+                    onClick={() => setEditingProduct(product)}
+                  >
+                    Restock Now
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Search and Filters */}
         <div className="space-y-4">
@@ -244,6 +317,18 @@ const Inventory = () => {
                     onChange={(e) => setEditingProduct({
                       ...editingProduct,
                       quantity: parseInt(e.target.value)
+                    })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Low Stock Threshold</label>
+                  <Input 
+                    type="number"
+                    value={editingProduct.lowStockThreshold || 10}
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      lowStockThreshold: parseInt(e.target.value)
                     })}
                   />
                 </div>
