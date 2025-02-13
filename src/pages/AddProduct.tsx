@@ -27,25 +27,27 @@ import {
 const formSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   category: z.string().min(1, "Category is required"),
-  quantity: z.string().transform(Number).pipe(z.number().min(0)),
-  price: z.string().transform(Number).pipe(z.number().min(0)),
+  quantity: z.coerce.number().min(0),
+  price: z.coerce.number().min(0),
 });
+
+type FormValues = z.infer<typeof formSchema>;
 
 const AddProduct = () => {
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       category: "",
-      quantity: "0",
-      price: "0",
+      quantity: 0,
+      price: 0,
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FormValues) => {
     console.log(values);
     // Here we would normally save the product
     navigate("/inventory");
