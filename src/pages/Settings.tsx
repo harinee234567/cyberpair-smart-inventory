@@ -141,18 +141,25 @@ const Settings = () => {
         </div>
 
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <QrCode className="w-5 h-5 text-gray-500" />
-              Store QR Code
-            </h2>
-            <Button variant="outline" size="sm" onClick={handleShowStoreQR}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="space-y-1">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <QrCode className="w-5 h-5 text-gray-500" />
+                Store QR Code
+              </h2>
+              <p className="text-sm text-gray-500">
+                Display your store's unique QR code for quick access
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleShowStoreQR}
+              className="w-full sm:w-auto"
+            >
               Show QR
             </Button>
           </div>
-          <p className="text-sm text-gray-500 mt-2">
-            Display your store's unique QR code for quick access
-          </p>
         </div>
 
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 space-y-4">
