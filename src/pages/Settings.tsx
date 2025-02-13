@@ -8,7 +8,7 @@ import {
   Download,
   LogOut,
   FileSpreadsheet,
-  FilePdf,
+  FileText, // Changed from FilePdf to FileText
   KeyRound,
   Store,
 } from "lucide-react";
@@ -149,7 +149,7 @@ const Settings = () => {
               Export as CSV
             </Button>
             <Button variant="outline" onClick={handleDownloadPDF} className="flex-1">
-              <FilePdf className="w-4 h-4 mr-2" />
+              <FileText className="w-4 h-4 mr-2" />
               Export as PDF
             </Button>
           </div>
