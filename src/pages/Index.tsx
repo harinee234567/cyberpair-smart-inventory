@@ -119,20 +119,6 @@ const Index = () => {
           <QrCode size={20} />
           Scan QR Code
         </Button>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-4">
-          <Link to="/inventory">
-            <Button variant="outline" className="w-full">
-              View Inventory
-            </Button>
-          </Link>
-          <Link to="/add-product">
-            <Button variant="outline" className="w-full">
-              Add Product
-            </Button>
-          </Link>
-        </div>
       </div>
     </MobileLayout>
   );
