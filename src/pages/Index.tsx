@@ -59,11 +59,6 @@ const Index = () => {
     setShowScanner(true);
   };
 
-  const handleQRCodeScanned = (result: string) => {
-    console.log("QR Code scanned:", result);
-    // Handle the scanned result here
-  };
-
   return (
     <MobileLayout>
       <div className="p-6 space-y-6">
@@ -137,7 +132,6 @@ const Index = () => {
         {showScanner && (
           <QRScanner
             onClose={() => setShowScanner(false)}
-            onScan={handleQRCodeScanned}
           />
         )}
       </div>

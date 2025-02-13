@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -8,9 +7,10 @@ import {
   Download,
   LogOut,
   FileSpreadsheet,
-  FileText, // Changed from FilePdf to FileText
+  FileText,
   KeyRound,
   Store,
+  QrCode,
 } from "lucide-react";
 import MobileLayout from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,6 @@ const Settings = () => {
   });
 
   const handleLogout = () => {
-    // Add logout logic here
     navigate("/login");
   };
 
@@ -65,6 +64,13 @@ const Settings = () => {
     setIsEditProfileOpen(false);
   };
 
+  const handleShowStoreQR = () => {
+    toast({
+      title: "Store QR Code",
+      description: "This feature will be implemented soon.",
+    });
+  };
+
   return (
     <MobileLayout>
       <div className="p-6 space-y-6">
@@ -73,7 +79,6 @@ const Settings = () => {
           Settings
         </h1>
 
-        {/* Profile Section */}
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold flex items-center gap-2">
@@ -104,7 +109,6 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Notification Settings */}
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 space-y-4">
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <Bell className="w-5 h-5 text-gray-500" />
@@ -136,7 +140,21 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Export Section */}
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <QrCode className="w-5 h-5 text-gray-500" />
+              Store QR Code
+            </h2>
+            <Button variant="outline" size="sm" onClick={handleShowStoreQR}>
+              Show QR
+            </Button>
+          </div>
+          <p className="text-sm text-gray-500 mt-2">
+            Display your store's unique QR code for quick access
+          </p>
+        </div>
+
         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 space-y-4">
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <Download className="w-5 h-5 text-gray-500" />
@@ -155,7 +173,6 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Logout Button */}
         <Button 
           variant="destructive" 
           className="w-full"
@@ -165,7 +182,6 @@ const Settings = () => {
           Logout
         </Button>
 
-        {/* Edit Profile Dialog */}
         <Dialog open={isEditProfileOpen} onOpenChange={setIsEditProfileOpen}>
           <DialogContent>
             <DialogHeader>
