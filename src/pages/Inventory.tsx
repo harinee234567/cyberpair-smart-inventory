@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Search, Filter, Edit, Trash2, QrCode } from "lucide-react";
+import { Search, Filter, Edit, Trash2, QrCode, Plus, Save } from "lucide-react";
 import MobileLayout from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 type Product = {
   id: string;
@@ -40,9 +49,12 @@ const mockProducts: Product[] = [
 ];
 
 const Inventory = () => {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [stockFilter, setStockFilter] = useState<string>("");
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [restockQuantity, setRestockQuantity] = useState<number>(0);
 
   const getStockStatus = (quantity: number) => {
     if (quantity <= 0) return "out";
@@ -58,6 +70,41 @@ const Inventory = () => {
         return "text-orange-500";
       default:
         return "text-green-500";
+    }
+  };
+
+  const handleSaveChanges = () => {
+    if (editingProduct) {
+      // Here we would normally update the product in the database
+      toast({
+        title: "Changes saved",
+        description: "Product information has been updated successfully.",
+      });
+      setEditingProduct(null);
+    }
+  };
+
+  const handleDelete = (productId: string) => {
+    // Here we would normally delete the product from the database
+    toast({
+      title: "Product deleted",
+      description: "The product has been removed from inventory.",
+      variant: "destructive",
+    });
+  };
+
+  const handleRestock = () => {
+    if (editingProduct && restockQuantity > 0) {
+      const newQuantity = editingProduct.quantity + restockQuantity;
+      setEditingProduct({
+        ...editingProduct,
+        quantity: newQuantity,
+      });
+      setRestockQuantity(0);
+      toast({
+        title: "Stock updated",
+        description: `Added ${restockQuantity} units to inventory.`,
+      });
     }
   };
 
@@ -134,23 +181,118 @@ const Inventory = () => {
                 </div>
 
                 <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-                  <Button variant="ghost" size="sm">
-                    <QrCode className="w-4 h-4 mr-2" />
-                    Scan QR
-                  </Button>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
-                      <Edit className="w-4 h-4" />
+                    <Button variant="outline" size="sm" onClick={() => setEditingProduct(product)}>
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit
                     </Button>
-                    <Button variant="ghost" size="sm" className="text-red-500">
-                      <Trash2 className="w-4 h-4" />
+                    <Button variant="outline" size="sm">
+                      <QrCode className="w-4 h-4 mr-2" />
+                      Scan QR
                     </Button>
                   </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-red-500"
+                    onClick={() => handleDelete(product.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
             );
           })}
         </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={!!editingProduct} onOpenChange={() => setEditingProduct(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Product</DialogTitle>
+            </DialogHeader>
+            {editingProduct && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Product Name</label>
+                  <Input 
+                    value={editingProduct.name}
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      name: e.target.value
+                    })}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Price</label>
+                  <Input 
+                    type="number"
+                    value={editingProduct.price}
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      price: parseFloat(e.target.value)
+                    })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Current Stock</label>
+                  <Input 
+                    type="number"
+                    value={editingProduct.quantity}
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      quantity: parseInt(e.target.value)
+                    })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Add Stock</label>
+                  <div className="flex gap-2">
+                    <Input 
+                      type="number"
+                      value={restockQuantity}
+                      onChange={(e) => setRestockQuantity(parseInt(e.target.value) || 0)}
+                      placeholder="Enter quantity to add"
+                    />
+                    <Button onClick={handleRestock}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add
+                    </Button>
+                  </div>
+                </div>
+
+                <Select 
+                  value={editingProduct.category}
+                  onValueChange={(value) => setEditingProduct({
+                    ...editingProduct,
+                    category: value
+                  })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="grocery">Grocery</SelectItem>
+                    <SelectItem value="clothing">Clothing</SelectItem>
+                    <SelectItem value="electronics">Electronics</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditingProduct(null)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveChanges}>
+                <Save className="w-4 h-4 mr-2" />
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </MobileLayout>
   );
