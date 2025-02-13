@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Upload, Save, QrCode } from "lucide-react";
+import { Upload, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +29,6 @@ const formSchema = z.object({
   category: z.string().min(1, "Category is required"),
   quantity: z.string().transform(Number).pipe(z.number().min(0)),
   price: z.string().transform(Number).pipe(z.number().min(0)),
-  supplierName: z.string().min(1, "Supplier name is required"),
 });
 
 const AddProduct = () => {
@@ -43,7 +42,6 @@ const AddProduct = () => {
       category: "",
       quantity: "0",
       price: "0",
-      supplierName: "",
     },
   });
 
@@ -137,54 +135,31 @@ const AddProduct = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="supplierName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Supplier Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter supplier name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-center w-full">
-                <label
-                  htmlFor="image-upload"
-                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-                >
-                  {imagePreview ? (
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="h-full object-contain"
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center">
-                      <Upload className="w-8 h-8 text-gray-400" />
-                      <p className="text-sm text-gray-500">Upload product image</p>
-                    </div>
-                  )}
-                  <input
-                    id="image-upload"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
+            <div className="flex items-center justify-center w-full">
+              <label
+                htmlFor="image-upload"
+                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+              >
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="h-full object-contain"
                   />
-                </label>
-              </div>
-
-              <div className="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <QrCode className="text-gray-500" />
-                  <span className="text-sm text-gray-600">QR Code will be auto-generated</span>
-                </div>
-              </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center">
+                    <Upload className="w-8 h-8 text-gray-400" />
+                    <p className="text-sm text-gray-500">Upload product image</p>
+                  </div>
+                )}
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+              </label>
             </div>
 
             <Button type="submit" className="w-full">
