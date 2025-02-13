@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Package, PackageX, AlertTriangle, Search, QrCode, Store } from "lucide-react";
+import { Package, PackageX, AlertTriangle, Search, QrCode, Store, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import MobileLayout from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
@@ -48,6 +48,10 @@ const Index = () => {
 
   const handleLowStockClick = () => {
     // Navigate to low stock alerts page
+  };
+
+  const handleExpiringStockClick = () => {
+    // Navigate to expiring stock page
   };
 
   const handleScanQR = () => {
@@ -108,6 +112,14 @@ const Index = () => {
             trend="-2% ↓"
             color="bg-orange-500"
             onClick={handleLowStockClick}
+          />
+          <DashboardStat
+            icon={Clock}
+            label="Expiring Soon"
+            value="5"
+            trend="+2 ↑"
+            color="bg-amber-500"
+            onClick={handleExpiringStockClick}
           />
         </div>
 
