@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Package, PackageX, AlertTriangle, Search, QrCode, Store, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import MobileLayout from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
+import QRScanner from "@/components/QRScanner";
 
 const DashboardStat = ({
   icon: Icon,
@@ -45,6 +45,7 @@ const DashboardStat = ({
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showScanner, setShowScanner] = useState(false);
 
   const handleLowStockClick = () => {
     // Navigate to low stock alerts page
@@ -55,13 +56,17 @@ const Index = () => {
   };
 
   const handleScanQR = () => {
-    // Handle QR scanning
+    setShowScanner(true);
+  };
+
+  const handleQRCodeScanned = (result: string) => {
+    console.log("QR Code scanned:", result);
+    // Handle the scanned result here
   };
 
   return (
     <MobileLayout>
       <div className="p-6 space-y-6">
-        {/* Header Section */}
         <div className="flex justify-between items-center">
           <div>
             <div className="flex items-center gap-2">
@@ -77,7 +82,6 @@ const Index = () => {
           />
         </div>
 
-        {/* Search Section */}
         <div className="relative">
           <Search className="absolute left-3 top-3 text-gray-400" size={20} />
           <input
@@ -89,7 +93,6 @@ const Index = () => {
           />
         </div>
 
-        {/* Quick Stats */}
         <div className="space-y-4">
           <DashboardStat
             icon={Package}
@@ -123,7 +126,6 @@ const Index = () => {
           />
         </div>
 
-        {/* QR Scan Button */}
         <Button
           onClick={handleScanQR}
           className="w-full h-12 flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all"
@@ -131,6 +133,13 @@ const Index = () => {
           <QrCode size={20} />
           Scan QR Code
         </Button>
+
+        {showScanner && (
+          <QRScanner
+            onClose={() => setShowScanner(false)}
+            onScan={handleQRCodeScanned}
+          />
+        )}
       </div>
     </MobileLayout>
   );
