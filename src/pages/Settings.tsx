@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -168,12 +169,20 @@ const Settings = () => {
             Export Inventory
           </h2>
           
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleDownloadCSV} className="flex-1">
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              variant="outline" 
+              onClick={handleDownloadCSV} 
+              className="w-full flex items-center justify-center"
+            >
               <FileSpreadsheet className="w-4 h-4 mr-2" />
               Export as CSV
             </Button>
-            <Button variant="outline" onClick={handleDownloadPDF} className="flex-1">
+            <Button 
+              variant="outline" 
+              onClick={handleDownloadPDF} 
+              className="w-full flex items-center justify-center"
+            >
               <FileText className="w-4 h-4 mr-2" />
               Export as PDF
             </Button>
