@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import AddProduct from "./pages/AddProduct";
 import Inventory from "./pages/Inventory";
 import Alerts from "./pages/Alerts";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/alerts" element={<Alerts />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
