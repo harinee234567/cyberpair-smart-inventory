@@ -51,8 +51,8 @@ const mockProducts: Product[] = [
 const Inventory = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
-  const [stockFilter, setStockFilter] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [stockFilter, setStockFilter] = useState<string>("all");
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [restockQuantity, setRestockQuantity] = useState<number>(0);
 
@@ -127,24 +127,24 @@ const Inventory = () => {
           </div>
 
           <div className="flex gap-2">
-            <Select onValueChange={setCategoryFilter}>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
+                <SelectItem value="all">All Categories</SelectItem>
                 <SelectItem value="grocery">Grocery</SelectItem>
                 <SelectItem value="clothing">Clothing</SelectItem>
                 <SelectItem value="electronics">Electronics</SelectItem>
               </SelectContent>
             </Select>
 
-            <Select onValueChange={setStockFilter}>
+            <Select value={stockFilter} onValueChange={setStockFilter}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Stock Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Stock</SelectItem>
+                <SelectItem value="all">All Stock</SelectItem>
                 <SelectItem value="in">In Stock</SelectItem>
                 <SelectItem value="low">Low Stock</SelectItem>
                 <SelectItem value="out">Out of Stock</SelectItem>
