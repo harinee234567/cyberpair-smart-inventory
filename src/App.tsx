@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import AddProduct from "./pages/AddProduct";
 import Inventory from "./pages/Inventory";
+import Alerts from "./pages/Alerts";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/alerts" element={<Alerts />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
