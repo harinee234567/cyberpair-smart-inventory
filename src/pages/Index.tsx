@@ -1,9 +1,9 @@
+
 import { useState } from "react";
-import { Package, PackageX, AlertTriangle, Search, QrCode, Store, Clock } from "lucide-react";
+import { Package, PackageX, AlertTriangle, Search, Store, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import MobileLayout from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
-import QRScanner from "@/components/QRScanner";
 
 const DashboardStat = ({
   icon: Icon,
@@ -45,7 +45,6 @@ const DashboardStat = ({
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [showScanner, setShowScanner] = useState(false);
 
   const handleLowStockClick = () => {
     // Navigate to low stock alerts page
@@ -53,10 +52,6 @@ const Index = () => {
 
   const handleExpiringStockClick = () => {
     // Navigate to expiring stock page
-  };
-
-  const handleScanQR = () => {
-    setShowScanner(true);
   };
 
   return (
@@ -120,20 +115,6 @@ const Index = () => {
             onClick={handleExpiringStockClick}
           />
         </div>
-
-        <Button
-          onClick={handleScanQR}
-          className="w-full h-12 flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all"
-        >
-          <QrCode size={20} />
-          Scan QR Code
-        </Button>
-
-        {showScanner && (
-          <QRScanner
-            onClose={() => setShowScanner(false)}
-          />
-        )}
       </div>
     </MobileLayout>
   );

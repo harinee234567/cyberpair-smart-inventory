@@ -1,12 +1,13 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Upload, Save } from "lucide-react";
+import { Upload, Save, QrCode } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import MobileLayout from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
+import QRScanner from "@/components/QRScanner";
 import {
   Form,
   FormControl,
@@ -36,6 +37,7 @@ type FormValues = z.infer<typeof formSchema>;
 const AddProduct = () => {
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -64,11 +66,23 @@ const AddProduct = () => {
     }
   };
 
+  const handleScanQR = () => {
+    setShowScanner(true);
+  };
+
   return (
     <MobileLayout>
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold">Add New Product</h1>
         
+        <Button
+          onClick={handleScanQR}
+          className="w-full h-12 flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all mb-6"
+        >
+          <QrCode size={20} />
+          Scan QR Code
+        </Button>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -170,6 +184,12 @@ const AddProduct = () => {
             </Button>
           </form>
         </Form>
+
+        {showScanner && (
+          <QRScanner
+            onClose={() => setShowScanner(false)}
+          />
+        )}
       </div>
     </MobileLayout>
   );
