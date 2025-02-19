@@ -1,16 +1,9 @@
-
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-
-const DEMO_EMAIL = "demo@example.com";
-const DEMO_PASSWORD = "demo123";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,28 +12,8 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // Simple demo credentials check
-    if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
-      // Store authentication state
-      localStorage.setItem("isAuthenticated", "true");
-      
-      toast({
-        title: "Login successful",
-        description: "Welcome back!",
-      });
-
-      // Redirect to dashboard
-      navigate("/");
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Login failed",
-        description: "Please use the demo credentials provided",
-      });
-    }
-
-    setIsLoading(false);
+    // Handle login logic here
+    setTimeout(() => setIsLoading(false), 1000); // Simulated loading
   };
 
   return (
