@@ -4,7 +4,6 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Alerts from "./pages/Alerts";
-import Settings from "./pages/Settings";
 import AuthGuard from "./components/AuthGuard";
 import { Toaster } from "./components/ui/toaster";
 
@@ -27,14 +26,6 @@ function App() {
           element={
             <AuthGuard>
               <Alerts />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <AuthGuard>
-              <Settings />
             </AuthGuard>
           }
         />
