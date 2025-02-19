@@ -8,7 +8,7 @@ const MobileLayout = ({ children }: { children: React.ReactNode }) => {
   const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
-    { icon: Home, label: "Home", path: "/" },
+    { icon: Home, label: "Home", path: "/dashboard" },
     { icon: Package, label: "Inventory", path: "/inventory" },
     { icon: PlusCircle, label: "Add", path: "/add-product" },
     { icon: Bell, label: "Alerts", path: "/alerts" },
