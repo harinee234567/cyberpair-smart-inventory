@@ -310,15 +310,6 @@ const Alerts = () => {
               </div>
             </div>
           </DialogContent>
-          <DialogFooter>
-              <Button variant="outline" onClick={() => setRestockProduct(null)}>
-                Cancel
-              </Button>
-              <Button onClick={handleRestockSubmit}>
-                <Plus className="w-4 h-4 mr-2" />
-                Restock
-              </Button>
-            </DialogFooter>
         </Dialog>
       </div>
     </MobileLayout>
