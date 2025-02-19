@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Search, Filter, Edit, Trash2, QrCode, Plus, Save } from "lucide-react";
 import MobileLayout from "@/components/MobileLayout";
@@ -157,6 +158,7 @@ const Inventory = () => {
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold">Inventory</h1>
 
+        {/* Search and Filters */}
         <div className="space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-3 text-gray-400" size={20} />
@@ -197,6 +199,7 @@ const Inventory = () => {
           </div>
         </div>
 
+        {/* Product List */}
         <div className="space-y-4">
           {filteredProducts.map((product) => {
             const stockStatus = getStockStatus(product.quantity, product.lowStockThreshold);
@@ -253,10 +256,11 @@ const Inventory = () => {
           })}
         </div>
 
+        {/* Edit Dialog */}
         <Dialog open={!!editingProduct} onOpenChange={() => setEditingProduct(null)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Product Details</DialogTitle>
+              <DialogTitle>Edit Product</DialogTitle>
             </DialogHeader>
             {editingProduct && (
               <div className="space-y-4">
@@ -264,8 +268,10 @@ const Inventory = () => {
                   <label className="text-sm font-medium">Product Name</label>
                   <Input 
                     value={editingProduct.name}
-                    readOnly
-                    className="bg-gray-50"
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      name: e.target.value
+                    })}
                   />
                 </div>
                 
@@ -274,8 +280,10 @@ const Inventory = () => {
                   <Input 
                     type="number"
                     value={editingProduct.price}
-                    readOnly
-                    className="bg-gray-50"
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      price: parseFloat(e.target.value)
+                    })}
                   />
                 </div>
 
@@ -284,8 +292,10 @@ const Inventory = () => {
                   <Input 
                     type="number"
                     value={editingProduct.quantity}
-                    readOnly
-                    className="bg-gray-50"
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      quantity: parseInt(e.target.value)
+                    })}
                   />
                 </div>
 
@@ -294,8 +304,10 @@ const Inventory = () => {
                   <Input 
                     type="number"
                     value={editingProduct.lowStockThreshold || 10}
-                    readOnly
-                    className="bg-gray-50"
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      lowStockThreshold: parseInt(e.target.value)
+                    })}
                   />
                 </div>
 
@@ -315,19 +327,27 @@ const Inventory = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Category</label>
-                  <Input
-                    value={editingProduct.category}
-                    readOnly
-                    className="bg-gray-50"
-                  />
-                </div>
+                <Select 
+                  value={editingProduct.category}
+                  onValueChange={(value) => setEditingProduct({
+                    ...editingProduct,
+                    category: value
+                  })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="grocery">Grocery</SelectItem>
+                    <SelectItem value="clothing">Clothing</SelectItem>
+                    <SelectItem value="electronics">Electronics</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setEditingProduct(null)}>
-                Close
+                Cancel
               </Button>
               <Button onClick={handleSaveChanges}>
                 <Save className="w-4 h-4 mr-2" />
