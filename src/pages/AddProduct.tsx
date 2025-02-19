@@ -30,6 +30,8 @@ const formSchema = z.object({
   category: z.string().min(1, "Category is required"),
   quantity: z.coerce.number().min(0),
   price: z.coerce.number().min(0),
+  manufacturingDate: z.string().optional(),
+  expiryDate: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -38,6 +40,7 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showScanner, setShowScanner] = useState(false);
+  const [showDateFields, setShowDateFields] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -46,6 +49,8 @@ const AddProduct = () => {
       category: "",
       quantity: 0,
       price: 0,
+      manufacturingDate: "",
+      expiryDate: "",
     },
   });
 
@@ -68,6 +73,11 @@ const AddProduct = () => {
 
   const handleScanQR = () => {
     setShowScanner(true);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setShowDateFields(category === "food" || category === "cosmetics");
+    form.setValue("category", category);
   };
 
   return (
@@ -105,14 +115,15 @@ const AddProduct = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Category</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={handleCategoryChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="grocery">Grocery</SelectItem>
+                      <SelectItem value="food">Food</SelectItem>
+                      <SelectItem value="cosmetics">Cosmetics</SelectItem>
                       <SelectItem value="clothing">Clothing</SelectItem>
                       <SelectItem value="electronics">Electronics</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
@@ -122,6 +133,38 @@ const AddProduct = () => {
                 </FormItem>
               )}
             />
+
+            {showDateFields && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="manufacturingDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Manufacturing Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="expiryDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Expiry Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
 
             <FormField
               control={form.control}
