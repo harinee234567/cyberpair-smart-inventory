@@ -1,9 +1,16 @@
+
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+
+const DEMO_EMAIL = "demo@example.com";
+const DEMO_PASSWORD = "demo123";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,8 +19,28 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Handle login logic here
-    setTimeout(() => setIsLoading(false), 1000); // Simulated loading
+
+    // Simple demo credentials check
+    if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+      // Store authentication state
+      localStorage.setItem("isAuthenticated", "true");
+      
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+      });
+
+      // Redirect to dashboard
+      navigate("/dashboard");
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: "Please use the demo credentials: demo@example.com / demo123",
+      });
+    }
+
+    setIsLoading(false);
   };
 
   return (
@@ -33,7 +60,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary pl-10"
-                placeholder="Enter your email"
+                placeholder="Enter demo@example.com"
                 required
               />
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -51,7 +78,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary pl-10"
-                placeholder="Enter your password"
+                placeholder="Enter demo123"
                 required
               />
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -75,6 +102,14 @@ const Login = () => {
               Sign up
             </Link>
           </p>
+
+          <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+            <p className="text-sm text-blue-600">
+              <strong>Demo Credentials:</strong><br />
+              Email: demo@example.com<br />
+              Password: demo123
+            </p>
+          </div>
         </form>
       </div>
     </div>
