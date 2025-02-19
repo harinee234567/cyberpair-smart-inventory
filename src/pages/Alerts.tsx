@@ -1,9 +1,17 @@
 import { useState } from "react";
-import { AlertTriangle, Bell, Trash, Calendar, AlertOctagon } from "lucide-react";
+import { AlertTriangle, Bell, Trash, Calendar, AlertOctagon, Plus } from "lucide-react";
 import MobileLayout from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { differenceInDays, parseISO } from "date-fns";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { DialogFooter } from "@/components/ui/dialog";
 
 type Product = {
   id: string;
@@ -38,6 +46,9 @@ const Alerts = () => {
       expiryDate: "2024-04-01", // Expired
     },
   ]);
+
+  const [restockProduct, setRestockProduct] = useState<Product | null>(null);
+  const [restockQuantity, setRestockQuantity] = useState<number>(0);
 
   // Stock status functions
   const getStockStatus = (quantity: number, threshold: number = 10) => {
@@ -134,6 +145,26 @@ const Alerts = () => {
       });
   };
 
+  const handleRestockSubmit = () => {
+    if (restockProduct && restockQuantity > 0) {
+      setProducts(prevProducts =>
+        prevProducts.map(product =>
+          product.id === restockProduct.id
+            ? { ...product, quantity: product.quantity + restockQuantity }
+            : product
+        )
+      );
+      
+      toast({
+        title: "Stock Updated",
+        description: `Added ${restockQuantity} units to ${restockProduct.name}`,
+      });
+      
+      setRestockProduct(null);
+      setRestockQuantity(0);
+    }
+  };
+
   const handleRemoveExpired = (productId: string) => {
     setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
     toast({
@@ -179,10 +210,7 @@ const Alerts = () => {
                   </div>
                   <Button 
                     size="sm"
-                    onClick={() => {
-                      // Navigate to inventory page with edit dialog open
-                      // This will be implemented in the next step
-                    }}
+                    onClick={() => setRestockProduct(product)}
                   >
                     Restock Now
                   </Button>
@@ -252,6 +280,46 @@ const Alerts = () => {
             })}
           </div>
         </div>
+
+        {/* Restock Dialog */}
+        <Dialog open={!!restockProduct} onOpenChange={() => setRestockProduct(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Restock {restockProduct?.name}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Current Stock</label>
+                <p className="text-sm text-gray-500">{restockProduct?.quantity} units</p>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Add Stock</label>
+                <div className="flex gap-2">
+                  <Input
+                    type="number"
+                    min="1"
+                    value={restockQuantity}
+                    onChange={(e) => setRestockQuantity(parseInt(e.target.value) || 0)}
+                    placeholder="Enter quantity to add"
+                  />
+                  <Button onClick={handleRestockSubmit} disabled={restockQuantity <= 0}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+          <DialogFooter>
+              <Button variant="outline" onClick={() => setRestockProduct(null)}>
+                Cancel
+              </Button>
+              <Button onClick={handleRestockSubmit}>
+                <Plus className="w-4 h-4 mr-2" />
+                Restock
+              </Button>
+            </DialogFooter>
+        </Dialog>
       </div>
     </MobileLayout>
   );
