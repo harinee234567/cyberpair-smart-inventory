@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { AlertTriangle, Bell, Trash, Calendar, AlertOctagon } from "lucide-react";
 import MobileLayout from "@/components/MobileLayout";
@@ -14,32 +13,31 @@ type Product = {
   expiryDate?: string;
 };
 
-const mockProducts: Product[] = [
-  {
-    id: "1",
-    name: "Sample Product 1",
-    quantity: 2,
-    lowStockThreshold: 10,
-    expiryDate: "2024-04-15",
-  },
-  {
-    id: "2",
-    name: "Sample Product 2",
-    quantity: 15,
-    lowStockThreshold: 20,
-    expiryDate: "2024-04-20",
-  },
-  {
-    id: "3",
-    name: "Sample Product 3",
-    quantity: 8,
-    lowStockThreshold: 15,
-    expiryDate: "2024-04-01", // Expired
-  },
-];
-
 const Alerts = () => {
   const { toast } = useToast();
+  const [products, setProducts] = useState<Product[]>([
+    {
+      id: "1",
+      name: "Sample Product 1",
+      quantity: 2,
+      lowStockThreshold: 10,
+      expiryDate: "2024-04-15",
+    },
+    {
+      id: "2",
+      name: "Sample Product 2",
+      quantity: 15,
+      lowStockThreshold: 20,
+      expiryDate: "2024-04-20",
+    },
+    {
+      id: "3",
+      name: "Sample Product 3",
+      quantity: 8,
+      lowStockThreshold: 15,
+      expiryDate: "2024-04-01", // Expired
+    },
+  ]);
 
   // Stock status functions
   const getStockStatus = (quantity: number, threshold: number = 10) => {
@@ -109,7 +107,7 @@ const Alerts = () => {
 
   // Filter and sort functions
   const getLowStockProducts = () => {
-    return mockProducts
+    return products
       .filter(product => {
         const status = getStockStatus(product.quantity, product.lowStockThreshold);
         return ["critical", "low", "warning"].includes(status);
@@ -123,7 +121,7 @@ const Alerts = () => {
   };
 
   const getExpiringProducts = () => {
-    return mockProducts
+    return products
       .filter(product => product.expiryDate)
       .sort((a, b) => {
         if (!a.expiryDate || !b.expiryDate) return 0;
@@ -137,6 +135,7 @@ const Alerts = () => {
   };
 
   const handleRemoveExpired = (productId: string) => {
+    setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
     toast({
       title: "Product Removed",
       description: "The expired product has been moved to the Expired Products Log.",
