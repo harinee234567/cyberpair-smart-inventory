@@ -27,27 +27,62 @@ type Product = {
   category: string;
   quantity: number;
   price: number;
+  manufacturingDate?: string;
+  expiryDate?: string;
   lowStockThreshold?: number;
 };
 
 const mockProducts: Product[] = [
   {
     id: "1",
-    name: "Sample Product 1",
+    name: "iPhone 13 Pro",
     image: "https://via.placeholder.com/50",
     category: "electronics",
-    quantity: 2,
-    price: 299.99,
-    lowStockThreshold: 10,
+    quantity: 15,
+    price: 999.99,
+    lowStockThreshold: 5,
   },
   {
     id: "2",
-    name: "Sample Product 2",
+    name: "Organic Milk",
+    image: "https://via.placeholder.com/50",
+    category: "food",
+    quantity: 25,
+    price: 4.99,
+    manufacturingDate: "2024-03-01",
+    expiryDate: "2024-03-15",
+    lowStockThreshold: 10,
+  },
+  {
+    id: "3",
+    name: "Face Cream",
+    image: "https://via.placeholder.com/50",
+    category: "cosmetics",
+    quantity: 8,
+    price: 29.99,
+    manufacturingDate: "2023-12-01",
+    expiryDate: "2025-12-01",
+    lowStockThreshold: 5,
+  },
+  {
+    id: "4",
+    name: "Cotton T-Shirt",
     image: "https://via.placeholder.com/50",
     category: "clothing",
-    quantity: 15,
-    price: 49.99,
-    lowStockThreshold: 20,
+    quantity: 50,
+    price: 19.99,
+    lowStockThreshold: 15,
+  },
+  {
+    id: "5",
+    name: "Fresh Bread",
+    image: "https://via.placeholder.com/50",
+    category: "food",
+    quantity: 3,
+    price: 2.99,
+    manufacturingDate: "2024-03-10",
+    expiryDate: "2024-03-12",
+    lowStockThreshold: 5,
   },
 ];
 
@@ -59,9 +94,9 @@ const Inventory = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [restockQuantity, setRestockQuantity] = useState<number>(0);
 
-  const getStockStatus = (quantity: number) => {
+  const getStockStatus = (quantity: number, threshold: number = 10) => {
     if (quantity <= 0) return "out";
-    if (quantity < 10) return "low";
+    if (quantity < threshold) return "low";
     return "in";
   };
 
@@ -109,6 +144,15 @@ const Inventory = () => {
     }
   };
 
+  const filteredProducts = mockProducts.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = categoryFilter === "all" || product.category === categoryFilter;
+    const productStockStatus = getStockStatus(product.quantity, product.lowStockThreshold);
+    const matchesStock = stockFilter === "all" || productStockStatus === stockFilter;
+    
+    return matchesSearch && matchesCategory && matchesStock;
+  });
+
   return (
     <MobileLayout>
       <div className="p-6 space-y-6">
@@ -134,9 +178,10 @@ const Inventory = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="grocery">Grocery</SelectItem>
+                <SelectItem value="food">Food</SelectItem>
                 <SelectItem value="clothing">Clothing</SelectItem>
                 <SelectItem value="electronics">Electronics</SelectItem>
+                <SelectItem value="cosmetics">Cosmetics</SelectItem>
               </SelectContent>
             </Select>
 
@@ -156,8 +201,8 @@ const Inventory = () => {
 
         {/* Product List */}
         <div className="space-y-4">
-          {mockProducts.map((product) => {
-            const stockStatus = getStockStatus(product.quantity);
+          {filteredProducts.map((product) => {
+            const stockStatus = getStockStatus(product.quantity, product.lowStockThreshold);
             return (
               <div
                 key={product.id}
@@ -172,6 +217,11 @@ const Inventory = () => {
                   <div className="flex-1">
                     <h3 className="font-semibold">{product.name}</h3>
                     <p className="text-sm text-gray-500">{product.category}</p>
+                    {(product.category === "food" || product.category === "cosmetics") && (
+                      <p className="text-xs text-gray-400">
+                        Expires: {product.expiryDate}
+                      </p>
+                    )}
                   </div>
                   <div className="flex flex-col items-end">
                     <span className="font-semibold">${product.price}</span>
