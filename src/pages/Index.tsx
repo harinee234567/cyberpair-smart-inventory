@@ -1,7 +1,7 @@
 
 import { useState } from "react";
-import { Package, PackageX, AlertTriangle, Search, Store, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Package, AlertTriangle, Search, Store, Clock, Bell, Calendar } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import MobileLayout from "@/components/MobileLayout";
 import { Button } from "@/components/ui/button";
 
@@ -44,14 +44,15 @@ const DashboardStat = ({
 );
 
 const Index = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleLowStockClick = () => {
-    // Navigate to low stock alerts page
+    navigate("/alerts");
   };
 
   const handleExpiringStockClick = () => {
-    // Navigate to expiring stock page
+    navigate("/alerts");
   };
 
   return (
@@ -114,6 +115,28 @@ const Index = () => {
             color="bg-amber-500"
             onClick={handleExpiringStockClick}
           />
+        </div>
+
+        <div className="space-y-4">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="w-full"
+            onClick={handleLowStockClick}
+          >
+            <Bell className="w-5 h-5 mr-2" />
+            Manage Low Stock Alerts
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="w-full"
+            onClick={handleExpiringStockClick}
+          >
+            <Calendar className="w-5 h-5 mr-2" />
+            Manage Expiry Alerts
+          </Button>
         </div>
       </div>
     </MobileLayout>
