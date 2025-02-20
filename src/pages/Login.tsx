@@ -20,9 +20,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Demo credentials check
     if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
-      // Set authentication state
       localStorage.setItem("isAuthenticated", "true");
       
       toast({
@@ -30,7 +28,6 @@ const Login = () => {
         description: "Welcome to the dashboard!",
       });
 
-      // Redirect to dashboard
       navigate("/dashboard");
     } else {
       toast({
